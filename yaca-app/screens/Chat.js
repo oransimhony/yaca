@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, ActivityIndicator, View, Text } from 'react-native';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import { GiftedChat } from 'react-native-gifted-chat';
 import * as config from './config.json'
@@ -7,6 +7,21 @@ import * as config from './config.json'
 const ip = config.ip;
 const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
 const CHATKIT_ROOM_ID = config.CHATKIT_ROOM_ID
+
+class TypingIndicator extends Component {
+    render() {
+      if (this.props.typingUsers.length > 0) {
+        return (
+          <Text style={{ fontSize: 16, marginLeft: 10, marginBottom: 5 }}>
+            {this.props.typingUsers.length > 1 ? `${this.props.typingUsers
+              .slice(0, 2)
+              .join(' and ')} are typing...` : `${this.props.typingUsers[0]} is typing...`}
+          </Text>
+        )
+      }
+      return <Text />
+    }
+  }
 
 class Chat extends Component {
 
@@ -22,6 +37,7 @@ class Chat extends Component {
         messages: [],
         currentUser: null,
         roomID: this.props.navigation.getParam('roomID'),
+        usersWhoAreTyping: []
     }
 
     onSendMessage = e => {
@@ -47,12 +63,22 @@ class Chat extends Component {
                     roomId: this.state.roomID,
                     hooks: {
                         onMessage: this.onReceive,
+                        onUserStartedTyping: this.onUserStartedTyping,
+                        onUserStoppedTyping: this.onUserStoppedTyping
                     },
                 });
             })
             .catch(err => {
                 console.log(err);
             });
+    }
+
+    onUserStartedTyping = user => {
+        this.setState(previousState => ({ usersWhoAreTyping: [...previousState.usersWhoAreTyping, user.name] }))
+    }
+
+    onUserStoppedTyping = user => {
+        this.setState({ usersWhoAreTyping: this.state.usersWhoAreTyping.filter(username => username !== user.name) })
     }
 
     onReceive = data => {
@@ -87,6 +113,17 @@ class Chat extends Component {
         });
     };
 
+    renderChatFooter = props => {
+        return <TypingIndicator typingUsers={this.state.usersWhoAreTyping} />
+    }
+
+    sendTypingEvent = () => {
+        this.state.currentUser
+            .isTypingIn({ roomId: this.state.roomID })
+            .then(() => { })
+            .catch(err => console.error(`Error: ${err}`));
+    }
+
     render() {
         let toDisplay = null;
 
@@ -104,6 +141,8 @@ class Chat extends Component {
                     user={{
                         _id: this.state.currentUser.id,
                     }}
+                    renderChatFooter={this.renderChatFooter}
+                    onInputTextChanged={this.sendTypingEvent}
                 />
             );
         }
