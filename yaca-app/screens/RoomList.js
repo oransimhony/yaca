@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Text, View, FlatList, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
 import axios from 'axios';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
-import * as config from './config.json'
 import { FontAwesome } from '@expo/vector-icons';
+import * as config from './config.json'
 
+const ip = config.ip;
 const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
 const CHATKIT_ROOM_ID = config.CHATKIT_ROOM_ID
 
@@ -57,7 +58,7 @@ export default class RoomList extends Component {
       instanceLocator: CHATKIT_INSTANCE_LOCATOR,
       userId: this.state.userID,
       tokenProvider: new TokenProvider({
-          url: 'http://localhost:5000/authenticate',
+          url: `http://${ip}:5000/authenticate`,
       }),
   });
 
@@ -77,9 +78,8 @@ export default class RoomList extends Component {
           console.log(err);
       });
 
-    axios.get('http://localhost:5000/rooms')
+    axios.get(`http://${ip}:5000/rooms`)
       .then(res => {
-        console.log(res.data);
         this.setState({ rooms: res.data })
       })
       .catch(err => {

@@ -7,6 +7,9 @@ import AuthLoading from './screens/AuthLoading';
 import VideoPlayer from './screens/VideoPlayer';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import RoomList from './screens/RoomList';
+import * as config from './screens/config.json';
+
+const ip = config.ip;
 
 class App extends Component {
   constructor(props) {
@@ -25,7 +28,7 @@ class App extends Component {
     }
 
     axios
-      .post('http://localhost:5000/users', { username })
+      .post(`http://${ip}:5000/users`, { username })
       .then(res => {
         this.setState({
           isAuthenticated: true,

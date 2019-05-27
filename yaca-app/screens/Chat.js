@@ -4,6 +4,7 @@ import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import { GiftedChat } from 'react-native-gifted-chat';
 import * as config from './config.json'
 
+const ip = config.ip;
 const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
 const CHATKIT_ROOM_ID = config.CHATKIT_ROOM_ID
 
@@ -33,7 +34,7 @@ class Chat extends Component {
             instanceLocator: CHATKIT_INSTANCE_LOCATOR,
             userId: this.props.navigation.getParam('userID'),
             tokenProvider: new TokenProvider({
-                url: 'http://localhost:5000/authenticate',
+                url: `http://${ip}:5000/authenticate`,
             }),
         });
 

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Alert, Button, TextInput, View, StyleSheet, AsyncStorage } from 'react-native';
 import axios from 'axios';
+import * as config from './config.json'
+
+const ip = config.ip;
 
 export default class Login extends Component {
   constructor(props) {
@@ -20,7 +23,7 @@ export default class Login extends Component {
     }
 
     axios
-      .post('http://localhost:5000/users', { username })
+      .post(`http://${ip}:5000/users`, { username })
       .then(res => {
         this.setState({
           id: res.data.id,
