@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { Text, View, FlatList, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
 import axios from 'axios';
+import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
+import * as config from './config.json'
+import { FontAwesome } from '@expo/vector-icons';
+
+const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
+const CHATKIT_ROOM_ID = config.CHATKIT_ROOM_ID
 
 function Room(props) {
   const { item, joinRoom } = props;
   return (
-    <View style={{ flex: 1, borderColor: '#333333', borderWidth: 2, borderRadius: 15, paddingLeft: 25, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 5 }}>
+    <View style={{ flex: 1, borderColor: '#333333', borderWidth: 2, borderRadius: 25, paddingLeft: 25, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 5, paddingVertical: 10 }}>
       <Text style={{ fontSize: 22, paddingVertical: 10 }}>{item.name} {item.id}</Text>
-      <TouchableOpacity style={{ paddingRight: 25 }} onPress={() => joinRoom(item.id)}><Text>Join</Text></TouchableOpacity>
+      <TouchableOpacity style={{ paddingRight: 25 }} onPress={() => joinRoom(item.id)}><Text style={{ fontSize: 20 }}>Join</Text></TouchableOpacity>
     </View>
   );
 }
@@ -40,8 +46,36 @@ export default class RoomList extends Component {
   }
 
   componentDidMount() {
-    AsyncStorage.getItem('userID').then(val => this.setState({ userID: val }))
+    this.onMount();
+  }
+
+  onMount = async () => {
+    await AsyncStorage.getItem('userID').then(val => this.setState({ userID: val }))
     AsyncStorage.getItem('username').then(val => this.setState({ screenTitle: val }, () => this.props.navigation.setParams({ screenTitle: val })));
+
+    const chatManager = new ChatManager({
+      instanceLocator: CHATKIT_INSTANCE_LOCATOR,
+      userId: this.state.userID,
+      tokenProvider: new TokenProvider({
+          url: 'http://localhost:5000/authenticate',
+      }),
+  });
+
+  chatManager
+      .connect()
+      .then(currentUser => {
+          this.setState({ currentUser });
+          // currentUser.getJoinableRooms()
+          //   .then(rooms => {
+          //     console.log(JSON.stringify(rooms))
+          //   })
+          //   .catch(err => {
+          //     console.log(`Error getting joinable rooms: ${err}`)
+          //   })
+      })
+      .catch(err => {
+          console.log(err);
+      });
 
     axios.get('http://localhost:5000/rooms')
       .then(res => {
@@ -53,10 +87,17 @@ export default class RoomList extends Component {
       })
   }
 
+  createRoom = () => {
+
+  }
+
   render() {
     return (
-      <View style={{ flex: 1, marginTop: 50 }}>
-        <Text style={{ fontSize: 32, paddingBottom: 20, marginLeft: 25 }}>Room List</Text>
+      <View style={{ flex: 1, marginTop: 20 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'spaceBetween' }}>
+        <Text style={{ fontSize: 32, paddingBottom: 20, marginLeft: 20, fontWeight: 'bold'}}>Room List</Text>
+        <TouchableOpacity onPress={this.createRoom} style={{ marginLeft: 'auto', marginRight: 20, paddingVertical: 10, paddingHorizontal: 15, borderColor: '#333333', borderWidth: 1, borderRadius: '50%', backgroundColor: '#000' }}><FontAwesome name="plus" size={22} color="#fff" style={{  }} /></TouchableOpacity>
+        </View>
         <FlatList
           data={this.state.rooms}
           renderItem={({ item }) => <Room item={item} joinRoom={this.joinRoom} />}
