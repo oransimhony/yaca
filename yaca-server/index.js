@@ -40,7 +40,6 @@ app.post('/authenticate', (req, res) => {
     userId: req.query.user_id,
   });
   res.status(authData.status).send(authData.body);
-  console.log(authData.status)
 });
 
 app.get('/rooms', (req, res) => {
