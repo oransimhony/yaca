@@ -6,4 +6,5 @@ yaca-app/*.p12
 yaca-app/*.key
 yaca-app/*.mobileprovision
 yaca-app/screens/config.json
+yaca-server/node_modules/**/*
 yaca-server/variables.env
