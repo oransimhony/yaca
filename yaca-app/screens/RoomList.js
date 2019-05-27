@@ -7,7 +7,6 @@ import * as config from './config.json'
 
 const ip = config.ip;
 const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
-const CHATKIT_ROOM_ID = config.CHATKIT_ROOM_ID
 
 function Room(props) {
   const { item, joinRoom } = props;
