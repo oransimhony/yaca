@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, Alert, TouchableOpacity } from 'react-native';
+import { Text, View, FlatList, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
 import axios from 'axios';
 
 function Room(props) {
@@ -14,15 +14,35 @@ function Room(props) {
 
 export default class RoomList extends Component {
 
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: params ? params.screenTitle : 'Title',
+      headerRight: (
+        <Text style={{ marginRight: 10 }} onPress={async () => {
+          AsyncStorage.removeItem('username');
+          AsyncStorage.removeItem('userID');
+          navigation.navigate('Auth');
+        }}>Logout</Text>
+      ),
+    }
+  };
+
+
   state = {
-    rooms: []
+    rooms: [],
+    userID: ''
   }
 
   joinRoom = (roomID) => {
-    this.props.navigation.navigate('Chat', { userID: this.props.navigation.getParam('userID'), roomID: roomID })
+    this.props.navigation.navigate('Chat', { userID: this.state.userID, roomID: roomID })
   }
 
   componentDidMount() {
+    AsyncStorage.getItem('userID').then(val => this.setState({ userID: val }))
+    AsyncStorage.getItem('username').then(val => this.setState({ screenTitle: val }, () => this.props.navigation.setParams({ screenTitle: val })));
+
     axios.get('http://localhost:5000/rooms')
       .then(res => {
         console.log(res.data);
@@ -37,7 +57,6 @@ export default class RoomList extends Component {
     return (
       <View style={{ flex: 1, marginTop: 50 }}>
         <Text style={{ fontSize: 32, paddingBottom: 20, marginLeft: 25 }}>Room List</Text>
-        <Text style={{ fontSize: 32, paddingBottom: 20, marginLeft: 25 }}>{this.props.navigation.getParam('userID')}</Text>
         <FlatList
           data={this.state.rooms}
           renderItem={({ item }) => <Room item={item} joinRoom={this.joinRoom} />}

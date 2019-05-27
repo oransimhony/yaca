@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import { Alert, Button, TextInput, View, StyleSheet, AsyncStorage } from 'react-native';
 import axios from 'axios';
 
 export default class Login extends Component {
@@ -25,6 +25,8 @@ export default class Login extends Component {
         this.setState({
           id: res.data.id,
         });
+        AsyncStorage.setItem('userID', this.state.id);
+        AsyncStorage.setItem('username', this.state.username);
         this.props.navigation.navigate('RoomList', { userID: this.state.id });
       })
       .catch(err => {

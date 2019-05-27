@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import Login from './screens/Login';
 import axios from 'axios';
 import Chat from './screens/Chat';
+import AuthLoading from './screens/AuthLoading';
 import VideoPlayer from './screens/VideoPlayer';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import RoomList from './screens/RoomList';
 
 class App extends Component {
@@ -30,6 +31,7 @@ class App extends Component {
           isAuthenticated: true,
           id: res.data.id,
         });
+
       })
       .catch(err => {
         Alert.alert('Login', 'Could not log you in');
@@ -69,10 +71,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppNavigator = createStackNavigator({
-  Login,
+const AuthStack = createStackNavigator({ Login });
+
+
+const AppStack = createStackNavigator({
   RoomList,
   Chat
 });
 
-export default createAppContainer(AppNavigator);
+export default createAppContainer(createSwitchNavigator(
+  {
+    AuthLoading: AuthLoading,
+    Auth: AuthStack,
+    App: AppStack
+
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+));

@@ -9,9 +9,13 @@ const CHATKIT_ROOM_ID = config.CHATKIT_ROOM_ID
 
 class Chat extends Component {
 
-    static navigationOptions = ({ navigation }) => ({
-        title: navigation.getParam('name') || 'Chat!'
-    });
+    static navigationOptions = ({ navigation }) => {
+        const { params } = navigation.state;
+
+        return {
+            title: params ? params.screenTitle : 'Title',
+        }
+    };
 
     state = {
         messages: [],

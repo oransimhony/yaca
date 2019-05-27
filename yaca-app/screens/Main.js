@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TextInput, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Text, TouchableOpacity, AsyncStorage } from 'react-native';
 
 class Main extends Component {
 
@@ -7,7 +7,8 @@ class Main extends Component {
 
     onChangeText = (text) => this.setState({ name: text.trim() });
 
-    onPress = () => {
+    onPress = async () => {
+        await AsyncStorage.setItem('name', this.state.name);
         this.props.navigation.navigate('Chat', { name: this.state.name });
     }
 
