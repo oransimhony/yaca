@@ -6,6 +6,7 @@ import Chat from './screens/Chat';
 import AuthLoading from './screens/AuthLoading';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import RoomList from './screens/RoomList';
+import CreateRoom from './screens/CreateRoom';
 import * as config from './screens/config.json';
 
 const ip = config.ip;
@@ -75,6 +76,7 @@ const AuthStack = createStackNavigator({ Login });
 
 const AppStack = createStackNavigator({
   RoomList,
+  CreateRoom,
   Chat
 });
 

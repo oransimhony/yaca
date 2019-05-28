@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import { FontAwesome } from '@expo/vector-icons';
 import * as config from './config.json'
+import { NavigationEvents } from 'react-navigation';
 
 const ip = config.ip;
 const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
@@ -77,6 +78,10 @@ export default class RoomList extends Component {
           console.log(err);
       });
 
+    this.getRooms();
+  }
+
+  getRooms = () => {
     axios.get(`http://${ip}:5000/rooms`)
       .then(res => {
         this.setState({ rooms: res.data })
@@ -87,15 +92,18 @@ export default class RoomList extends Component {
   }
 
   createRoom = () => {
-
+    this.props.navigation.navigate('CreateRoom', { currentUser: this.state.currentUser })
   }
 
   render() {
     return (
       <View style={{ flex: 1, marginTop: 20 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'spaceBetween' }}>
-        <Text style={{ fontSize: 28, paddingBottom: 20, marginLeft: 20}}>Hello, {this.state.userID}</Text>
-        {/* <TouchableOpacity onPress={this.createRoom} style={{ marginLeft: 'auto', marginRight: 20, paddingVertical: 10, paddingHorizontal: 15, borderColor: '#333333', borderWidth: 1, borderRadius: '50%', backgroundColor: '#000' }}><FontAwesome name="plus" size={22} color="#fff" style={{  }} /></TouchableOpacity> */}
+        <NavigationEvents
+          onDidFocus={payload => this.getRooms()}
+        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={{ fontSize: 28, paddingVertical: 10, marginLeft: 20}}>Hello, {this.state.userID}</Text>
+          <TouchableOpacity onPress={this.createRoom} style={{ marginRight: 20, paddingVertical: 10, paddingHorizontal: 12, borderColor: '#333333', borderWidth: 2, borderRadius: '50%', backgroundColor: '#000' }}><FontAwesome name="plus" size={16} color="#fff" style={{  }} /></TouchableOpacity>
         </View>
         <FlatList
           data={this.state.rooms}
