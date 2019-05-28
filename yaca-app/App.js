@@ -4,7 +4,6 @@ import Login from './screens/Login';
 import axios from 'axios';
 import Chat from './screens/Chat';
 import AuthLoading from './screens/AuthLoading';
-import VideoPlayer from './screens/VideoPlayer';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import RoomList from './screens/RoomList';
 import * as config from './screens/config.json';
@@ -55,9 +54,6 @@ class App extends Component {
                 { backgroundColor: '#ffff' },
               ]}
             >
-              {/* <View style={{ flex: 0.4 }}>
-                <VideoPlayer style={{ backgroundColor: 'red' }} />
-              </View> */}
               <View style={{ flex: 1 }}>
                 <Chat userID={this.state.id} />
               </View>

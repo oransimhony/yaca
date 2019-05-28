@@ -9,18 +9,18 @@ const CHATKIT_INSTANCE_LOCATOR = config.CHATKIT_INSTANCE_LOCATOR
 
 class TypingIndicator extends Component {
     render() {
-      if (this.props.typingUsers.length > 0) {
-        return (
-          <Text style={{ fontSize: 16, marginLeft: 10, marginBottom: 5 }}>
-            {this.props.typingUsers.length > 1 ? `${this.props.typingUsers
-              .slice(0, 2)
-              .join(' and ')} are typing...` : `${this.props.typingUsers[0]} is typing...`}
-          </Text>
-        )
-      }
-      return <Text />
+        if (this.props.typingUsers.length > 0) {
+            return (
+                <Text style={{ fontSize: 16, marginLeft: 10, marginBottom: 5 }}>
+                    {this.props.typingUsers.length > 1 ? `${this.props.typingUsers
+                        .slice(0, 2)
+                        .join(' and ')} are typing...` : `${this.props.typingUsers[0]} is typing...`}
+                </Text>
+            )
+        }
+        return <Text />
     }
-  }
+}
 
 class Chat extends Component {
 
