@@ -12,8 +12,8 @@ function Room(props) {
   const { item, joinRoom } = props;
   return (
     <View style={{ flex: 1, borderColor: '#333333', borderWidth: 2, borderRadius: 25, paddingLeft: 25, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 5, paddingVertical: 10 }}>
-      <Text style={{ fontSize: 22, paddingVertical: 10 }}>{item.name} {item.id}</Text>
-      <TouchableOpacity style={{ paddingRight: 25 }} onPress={() => joinRoom(item.id)}><Text style={{ fontSize: 20 }}>Join</Text></TouchableOpacity>
+      <Text style={{ fontSize: 22, paddingVertical: 10 }}>{item.name}:{item.id}</Text>
+      <TouchableOpacity style={{ paddingRight: 25 }} onPress={() => joinRoom(item.id, item.name)}><Text style={{ fontSize: 20 }}>Join</Text></TouchableOpacity>
     </View>
   );
 }
@@ -24,7 +24,7 @@ export default class RoomList extends Component {
     const { params } = navigation.state;
 
     return {
-      title: params ? params.screenTitle : 'Title',
+      title: 'Chats',
       headerRight: (
         <Text style={{ marginRight: 10 }} onPress={async () => {
           AsyncStorage.removeItem('username');
@@ -41,8 +41,8 @@ export default class RoomList extends Component {
     userID: ''
   }
 
-  joinRoom = (roomID) => {
-    this.props.navigation.navigate('Chat', { userID: this.state.userID, roomID: roomID })
+  joinRoom = (roomID, roomName) => {
+    this.props.navigation.navigate('Chat', { userID: this.state.userID, roomID: roomID, screenTitle: roomName })
   }
 
   componentDidMount() {
@@ -94,8 +94,8 @@ export default class RoomList extends Component {
     return (
       <View style={{ flex: 1, marginTop: 20 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'spaceBetween' }}>
-        <Text style={{ fontSize: 32, paddingBottom: 20, marginLeft: 20, fontWeight: 'bold'}}>Room List</Text>
-        <TouchableOpacity onPress={this.createRoom} style={{ marginLeft: 'auto', marginRight: 20, paddingVertical: 10, paddingHorizontal: 15, borderColor: '#333333', borderWidth: 1, borderRadius: '50%', backgroundColor: '#000' }}><FontAwesome name="plus" size={22} color="#fff" style={{  }} /></TouchableOpacity>
+        <Text style={{ fontSize: 28, paddingBottom: 20, marginLeft: 20}}>Hello, {this.state.userID}</Text>
+        {/* <TouchableOpacity onPress={this.createRoom} style={{ marginLeft: 'auto', marginRight: 20, paddingVertical: 10, paddingHorizontal: 15, borderColor: '#333333', borderWidth: 1, borderRadius: '50%', backgroundColor: '#000' }}><FontAwesome name="plus" size={22} color="#fff" style={{  }} /></TouchableOpacity> */}
         </View>
         <FlatList
           data={this.state.rooms}
