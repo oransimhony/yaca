@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Text, View, FlatList, Alert, TouchableOpacity, AsyncStorage, Clipboard } from 'react-native';
 import axios from 'axios';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import { FontAwesome } from '@expo/vector-icons';
@@ -13,7 +13,7 @@ function Room(props) {
   const { item, joinRoom } = props;
   return (
     <View style={{ flex: 1, borderColor: '#333333', borderWidth: 2, borderRadius: 25, paddingLeft: 25, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 5, paddingVertical: 10 }}>
-      <Text style={{ fontSize: 22, paddingVertical: 10 }}>{item.name}:{item.id}</Text>
+      <TouchableOpacity onPress={() => Clipboard.setString(item.id)}><Text style={{ fontSize: 22, paddingVertical: 10 }}>{item.name}:{item.id}</Text></TouchableOpacity>
       <TouchableOpacity style={{ paddingRight: 25 }} onPress={() => joinRoom(item.id, item.name)}><Text style={{ fontSize: 20 }}>Join</Text></TouchableOpacity>
     </View>
   );
